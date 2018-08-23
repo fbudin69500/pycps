@@ -130,17 +130,18 @@ class pkgconfig(object):
         # Extract list of libraries to link and find the location of this
         # component's library
         link_libs = [x[2:] for x in link_flags if x.startswith('-l')]
-        location, lib_type = self._find_library(lib_paths)
-        if location:
-            extend(self.component, 'Type', lib_type)
-            extend(self.component, 'Location', location)
+        if lib_paths:
+            location, lib_type = self._find_library(lib_paths)
+            if location:
+                extend(self.component, 'Type', lib_type)
+                extend(self.component, 'Location', location)
 
-            # Remove self from list of link libraries
-            my_libnames = {self._library_name}
-            if self._library_name.startswith('lib'):
-                my_libnames.add(self._library_name[3:])
+                # Remove self from list of link libraries
+                my_libnames = {self._library_name}
+                if self._library_name.startswith('lib'):
+                    my_libnames.add(self._library_name[3:])
 
-            link_libs = [x for x in link_libs if x not in my_libnames]
+                link_libs = [x for x in link_libs if x not in my_libnames]
 
         # Convert link libraries to Requires
         pkg_deps = self._ordered_requires
